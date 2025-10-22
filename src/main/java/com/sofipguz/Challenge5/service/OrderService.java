@@ -1,5 +1,6 @@
 package com.sofipguz.Challenge5.service;
 
+import com.sofipguz.Challenge5.exception.OrderNotFoundException;
 import com.sofipguz.Challenge5.module.Order;
 import com.sofipguz.Challenge5.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class OrderService {
     // Método para obtener una orden por su ID
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
     }
 
     // Método para crear una orden (ya lo teníamos)
@@ -56,7 +57,7 @@ public class OrderService {
     // Metodo para eliminar una orden
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id)) {
-            throw new RuntimeException("Order not found with id: " + id);
+            throw new OrderNotFoundException("Order not found with id: " + id);
         }
         orderRepository.deleteById(id);
     }
