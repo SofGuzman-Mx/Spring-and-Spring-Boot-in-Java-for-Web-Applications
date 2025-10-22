@@ -5,11 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate; // Solo se necesita esta importación de fecha
-import java.util.List;
+import lombok.Data; // From Lombok dependency
 
+@Data // Creates getters, setters, toString, etc. automatically
 @Entity
-@Table(name = "orders")
+@Table(name = "orders") // Specifies the table name in the database
 public class Order {
 
     @Id
@@ -17,49 +17,7 @@ public class Order {
     private Long id;
 
     private String customerName;
-    private LocalDate orderDate; // Tipo consistente: LocalDate
-    private List<String> products;
-    private Double totalAmount;
-
-    // --- GETTERS Y SETTERS ---
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public LocalDate getOrderDate() { // Tipo consistente: LocalDate
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDate orderDate) { // Tipo consistente: LocalDate
-        this.orderDate = orderDate;
-    }
-
-    public List<String> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<String> products) {
-        this.products = products;
-    }
-
-    public Double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
+    private String shippingAddress;
+    private Double totalPrice;
+    private String status; // For user story R5-6
 }

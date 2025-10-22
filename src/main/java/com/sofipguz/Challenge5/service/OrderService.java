@@ -5,50 +5,59 @@ import com.sofipguz.Challenge5.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-
 
 @Service
 public class OrderService {
-    private final OrderRepository orderRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    private OrderRepository orderRepository;
+
+    // MÉTODO QUE FALTA: Para obtener todas las órdenes
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
-    // THIS IS THE METHOD CALLED BY THE CONTROLLER
-    public Order createOrder(Order order) {
-        return orderRepository.save (order); // (6)
-    }
-
+    // Método para obtener una orden por su ID
     public Order getOrderById(Long id) {
-        return orderRepository.getReferenceById(id);
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
     }
+
+    // Método para crear una orden (ya lo teníamos)
+    public Order createOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
+    // Método para actualizar una orden
     public Order updateOrder(Long id, Order orderDetails) {
+        Order order = getOrderById(id); // Reutilizamos el método de arriba
 
-        Optional<Order> orderOptional = orderRepository.findById(id);
-
-        if (orderOptional.isPresent()) {
-            Order existingOrder = orderOptional.get();
-            existingOrder.setCustomerName(orderDetails.getCustomerName());
-            existingOrder.setProducts(orderDetails.getProducts());
-            existingOrder.setTotalAmount(orderDetails.getTotalAmount());
-
-            return orderRepository.save(existingOrder);
-        } else {
-            return null;
+        if (orderDetails.getCustomerName() != null) {
+            order.setCustomerName(orderDetails.getCustomerName());
         }
+
+        if (orderDetails.getShippingAddress() != null) {
+            order.setShippingAddress(orderDetails.getShippingAddress());
+        }
+
+        if (orderDetails.getTotalPrice() != null) {
+            order.setTotalPrice(orderDetails.getTotalPrice());
+        }
+
+        if(orderDetails.getStatus() != null) {
+            order.setStatus(orderDetails.getStatus());
+        }
+
+        return orderRepository.save(order);
     }
 
-
-    public boolean deleteOrder(Long id) {
-        if (orderRepository.existsById(id)) {
-            orderRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    // Metodo para eliminar una orden
+    public void deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RuntimeException("Order not found with id: " + id);
         }
+        orderRepository.deleteById(id);
     }
-}
 }
